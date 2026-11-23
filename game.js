@@ -9,7 +9,7 @@ const levels=[
  {name:'The Headliner',rows:4,cols:8,boss:true,limit:0}
 ];
 let g={},sfxEnabled=true,musicEnabled=true,ac=null,last=0,musicClock=0,musicStep=0;
-const art={};['kibaraska','train-station'].forEach(n=>{const im=new Image();im.src='asset/'+n+(n==='train-station'?'.jpg':'.png');art[n]=im});
+const art={};['kibaraska','train-station','derpy'].forEach(n=>{const im=new Image();im.src='asset/'+n+(n==='train-station'||n==='derpy'?'.jpg':'.png');art[n]=im});
 function sfx(f=500,d=.07,type='sine'){if(!sfxEnabled)return;try{ac ||= new(window.AudioContext||window.webkitAudioContext)();let o=ac.createOscillator(),a=ac.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(.065,ac.currentTime);a.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(a);a.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 const gameplayMusic = new Audio('asset/gameplay-audio.mp3');
 gameplayMusic.loop = true;
