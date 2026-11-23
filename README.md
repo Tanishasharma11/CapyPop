@@ -2,6 +2,12 @@
 
 A browser-based Bubble Shooter-inspired arcade game starring Kibaraska.
 
+Check it on the web:
+
+https://tanishasharma11.github.io/CapyPop/
+
+Or:
+
 Open `index.html` in a modern browser. 
 
 No dependencies or build process are required.
@@ -15,9 +21,6 @@ No dependencies or build process are required.
 
 🍊F: activate Kibaraska Fever when the meter is full
 
-🍊Q: activate Derpy's shield (blocks one friendly-fire hit)
-
-🍊E: activate Sussie's boost (+30 Fever charge)
 
 ### Core mechanics
 Shoot coloured energy orbs into demon clusters.
