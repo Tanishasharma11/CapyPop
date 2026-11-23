@@ -23,7 +23,7 @@ Open `index.html` in a modern browser.  No dependencies or build process are req
 
 🍊E: boosts fever meter faster to destroy 5 demons together
 
-🍊Q: shield activated when friendly idol are among enemies
+🍊Q: Derpy shield activated when friendly idols are among enemies
 
 ## 🔧 Core mechanics
 Shoot coloured energy orbs into demon clusters.
