@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171127">
+<title>CAPYPOP! — Demon Express</title><link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="app">
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">🍊</span><span>CAPYPOP!<small>DEMON EXPRESS</small></span></a>
+  <div class="stats">
+    <div><small>SCORE</small><strong id="score">00000</strong></div>
+    <div><small>LEVEL</small><strong id="level">01 / 05</strong></div>
+    <div><small>LIVES</small><strong id="lives">♥ ♥ ♥</strong></div>
+    <div><small>YUZU</small><strong id="coins">0 🍊</strong></div>
+  </div>
+  <div class="audio-controls"><button class="sound" id="musicBtn" title="Toggle music" aria-label="Toggle music">♫ MUSIC ON</button><button class="sound" id="soundBtn" title="Toggle sound effects" aria-label="Toggle sound effects">🔊 SFX ON</button></div>
+</header>
+<section class="shell">
+  <div class="heading"><div><span class="eyebrow">ALL ABOARD, SUPERFAN!</span><h1>Pop demons. <em>Protect the idols.</em></h1></div><p>Match 3 or more demons of the same colour. Keep your shots away from friendly idols!</p></div>
+  <div class="gamebox">
+    <canvas id="game" width="960" height="600" aria-label="CAPYPOP Demon Express game"></canvas>
+    <div class="overlay" id="menu">
+      <div class="modal"><div class="hero">🐹🎧🍊</div><span class="eyebrow">KIBARASKA NEEDS YOU</span><h2>THE DEMON<br><em>EXPRESS</em></h2>
+      <p>Clear each demon formation before it reaches the train! Match colours, build combos and protect the friendly idols.</p>
+      <div class="how"><span>🎯 Match 3+</span><span>✨ Build combos</span><span>💜 Protect idols</span></div>
+      <button class="primary" id="start">START LEVEL 1 <b>▶</b></button><small>Mouse / touch to aim & shoot · A / D or ← / → to move</small></div>
+    </div>
+    <div class="overlay hidden" id="result">
+      <div class="modal"><div class="hero" id="resultEmoji">🏆🍊</div><span class="eyebrow" id="resultEyebrow">LEVEL CLEAR</span><h2 id="resultTitle">PERFECT POP!</h2>
+      <p id="resultText">The Demon Express is safe.</p><div class="resultStats"><div>LEVEL SCORE<strong id="levelScore">0</strong></div><div>YUZU EARNED<strong id="earned">0</strong></div></div>
+      <button class="primary" id="next">NEXT LEVEL <b>→</b></button><button class="secondary" id="retry">REPLAY LEVEL</button></div>
+    </div>
+    <div class="hud-toast" id="toast"></div>
+    <div class="bossbar hidden" id="bossbar"><span>DEMON BOSS</span><div><i id="bossFill"></i></div><b id="bossHp">5 / 5</b></div>
+  </div>
+  <div class="bottom">
+    <div class="move"><kbd>A</kbd><kbd>D</kbd><span>Move along train · Q shield · E boost</span></div>
+    <div class="aim"><span class="dot pink"></span><span class="dot purple"></span><span class="dot cyan"></span> Match colours · Avoid idols</div>
+    <div class="power">COMBO <strong id="combo">×1</strong> <span class="meter"><i id="meter"></i></span></div>
+  </div>
+</section>
+<p class="foot">Original fan-inspired prototype · Original placeholder artwork and synthesized sound · Not affiliated with any existing franchise.</p>
+</main><script src="js/game.js"></script>
+</body></html>
