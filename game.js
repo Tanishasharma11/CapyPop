@@ -11,13 +11,28 @@ const levels=[
 let g={},sfxEnabled=true,musicEnabled=true,ac=null,last=0,musicClock=0,musicStep=0;
 const art={};['kibaraska','train-station'].forEach(n=>{const im=new Image();im.src='asset/'+n+(n==='train-station'?'.jpg':'.png');art[n]=im});
 function sfx(f=500,d=.07,type='sine'){if(!sfxEnabled)return;try{ac ||= new(window.AudioContext||window.webkitAudioContext)();let o=ac.createOscillator(),a=ac.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(.065,ac.currentTime);a.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(a);a.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
-function musicNote(freq,dur=.19,vol=.018){if(!musicEnabled)return;try{ac ||= new(window.AudioContext||window.webkitAudioContext)();let o=ac.createOscillator(),a=ac.createGain();o.type='triangle';o.frequency.value=freq;a.gain.setValueAtTime(.0001,ac.currentTime);a.gain.exponentialRampToValueAtTime(vol,ac.currentTime+.025);a.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.connect(a);a.connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch(e){}}
-function musicTick(dt){if(!musicEnabled||g.mode==='menu')return;musicClock+=dt;const notes=[523,659,784,659,587,698,880,698,523,659,784,988,880,784,659,587];while(musicClock>.22){musicClock-=.22;let n=notes[musicStep++%notes.length];musicNote(n,.2,.014);if(musicStep%4===0)musicNote(n/2,.28,.009)}}
-function fresh(level){g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
+const gameplayMusic = new Audio('asset/gameplay-audio.mp3');
+gameplayMusic.loop = true;
+gameplayMusic.volume = 0.65;
+
+function playGameplayMusic() {
+  if (!musicEnabled || g.mode !== 'play') return;
+  gameplayMusic.play().catch(err => console.log('Music playback:', err));
+}
+
+function stopGameplayMusic() {
+  gameplayMusic.pause();
+  gameplayMusic.currentTime = 0;
+}
+function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
 function toast(t){g.toastText=t;g.toast=1.4;$('toast').textContent=t;$('toast').classList.add('show')}
 function updateHUD(){$('score').textContent=String(g.score).padStart(5,'0');$('lives').textContent='♥ '.repeat(g.lives).trim()||'—';$('coins').textContent=g.coins+' 🍊';$('combo').textContent='×'+Math.max(1,g.combo);$('meter').style.width=g.fever+'%';if(g.boss){$('bossFill').style.width=(100*g.boss.hp/g.boss.max)+'%';$('bossHp').textContent=g.boss.hp+' / '+g.boss.max}}
-function start(level=1){try{ac ||= new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}fresh(level)}
-function finish(win){g.mode='result';let reward=Math.max(1,Math.floor(g.score/250)+(win?3:0));g.coins=reward;let old=Number(localStorage.getItem('capypopCoins')||0);localStorage.setItem('capypopCoins',old+reward);let best=Number(localStorage.getItem('capypopBest')||0);if(g.score>best)localStorage.setItem('capypopBest',g.score);$('resultEmoji').textContent=win?'🏆🍊':'🐹💜';$('resultEyebrow').textContent=win?'LEVEL CLEARED':'TRAIN NEEDS A RESET';$('resultTitle').textContent=win?(g.level===5?'DEMON HEADLINER DEFEATED!':'SUPER POP!'):'SO CLOSE!';$('resultText').textContent=win?'The idols are safe. Your fan energy is legendary.':'The demons reached the train. One more try?';$('levelScore').textContent=g.score;$('earned').textContent=reward;$('next').textContent=g.level===5?'PLAY FROM LEVEL 1':'NEXT LEVEL';$('next').onclick=()=>start(g.level===5?1:g.level+1);$('retry').onclick=()=>start(g.level);$('result').classList.remove('hidden');$('bossbar').classList.add('hidden');sfx(win?900:160,.25,win?'sine':'triangle')}
+function start(level=1){
+  try{ac ||= new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
+  fresh(level);
+  playGameplayMusic();
+}
+function finish(win){g.mode='result';stopGameplayMusic();let reward=Math.max(1,Math.floor(g.score/250)+(win?3:0));g.coins=reward;let old=Number(localStorage.getItem('capypopCoins')||0);localStorage.setItem('capypopCoins',old+reward);let best=Number(localStorage.getItem('capypopBest')||0);if(g.score>best)localStorage.setItem('capypopBest',g.score);$('resultEmoji').textContent=win?'🏆🍊':'🐹💜';$('resultEyebrow').textContent=win?'LEVEL CLEARED':'TRAIN NEEDS A RESET';$('resultTitle').textContent=win?(g.level===5?'DEMON HEADLINER DEFEATED!':'SUPER POP!'):'SO CLOSE!';$('resultText').textContent=win?'The idols are safe. Your fan energy is legendary.':'The demons reached the train. One more try?';$('levelScore').textContent=g.score;$('earned').textContent=reward;$('next').textContent=g.level===5?'PLAY FROM LEVEL 1':'NEXT LEVEL';$('next').onclick=()=>start(g.level===5?1:g.level+1);$('retry').onclick=()=>start(g.level);$('result').classList.remove('hidden');$('bossbar').classList.add('hidden');sfx(win?900:160,.25,win?'sine':'triangle')}
 function popCluster(seed){let found=[],stack=[seed],seen=new Set();while(stack.length){let e=stack.pop();if(!e||seen.has(e)||!e.alive)continue;seen.add(e);if(e.friendly||e.color!==seed.color)continue;found.push(e);for(let n of neighbors(e))if(!seen.has(n)&&!n.friendly&&n.color===seed.color)stack.push(n)}return found}
 function neighbors(e){return g.grid.filter(n=>n!==e&&n.alive&&Math.hypot(n.x-e.x,n.y-e.y)<67)}
 function explode(x,y,color,n=14){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,v=70+Math.random()*190;g.particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.45+Math.random()*.35,max:.8,r:2+Math.random()*4,color})}}
@@ -32,7 +47,7 @@ return true}
 function dropCheck(){// detached clusters fall away after a group is removed
 let live=g.grid.filter(e=>e.alive&&!e.friendly),seen=new Set();let connected=new Set();let tops=live.filter(e=>e.y<140);let q=[...tops];while(q.length){let e=q.pop();if(connected.has(e))continue;connected.add(e);neighbors(e).forEach(n=>{if(!connected.has(n))q.push(n)})}
 live.forEach(e=>{if(!connected.has(e)){e.alive=false;g.score+=50;g.coins+=1;explode(e.x,e.y,C[e.color],8)}})}
-function update(dt){if(g.mode!=='play')return;g.elapsed+=dt;musicTick(dt);g.shield=Math.max(0,(g.shield||0)-dt);g.boost=Math.max(0,(g.boost||0)-dt);g.playerX+=(g.move-g.playerX)*Math.min(1,dt*8);if(key.ArrowLeft||key.a||key.A)g.playerX-=250*dt;if(key.ArrowRight||key.d||key.D)g.playerX+=250*dt;g.playerX=Math.max(70,Math.min(380,g.playerX));g.comboTimer-=dt;if(g.comboTimer<=0){g.combo=0}
+function update(dt){if(g.mode!=='play')return;g.elapsed+=dt;g.shield=Math.max(0,(g.shield||0)-dt);g.boost=Math.max(0,(g.boost||0)-dt);g.playerX+=(g.move-g.playerX)*Math.min(1,dt*8);if(key.ArrowLeft||key.a||key.A)g.playerX-=250*dt;if(key.ArrowRight||key.d||key.D)g.playerX+=250*dt;g.playerX=Math.max(70,Math.min(380,g.playerX));g.comboTimer-=dt;if(g.comboTimer<=0){g.combo=0}
 g.toast=Math.max(0,g.toast-dt);if(!g.toast)$('toast').classList.remove('show');
 for(let e of g.grid)e.phase+=dt*2;
 for(let sh of g.shots){sh.x+=sh.vx*dt;sh.y+=sh.vy*dt;if(sh.x<12||sh.x>W-12){sh.vx*=-1;sh.x=Math.max(12,Math.min(W-12,sh.x))}if(hitShot(sh))sh.dead=true;if(sh.y<60)sh.dead=true}g.shots=g.shots.filter(s=>!s.dead);
@@ -61,6 +76,16 @@ window.addEventListener('keydown',e=>{key[e.key]=true;if(e.key===' '){e.preventD
 if(e.key.toLowerCase()==='e'&&g.mode==='play'&&!g.boost){g.boost=8;g.fever=Math.min(100,g.fever+30);toast('SUSSIE BOOST! +30 FEVER');sfx(990,.18)}
 if(e.key.toLowerCase()==='f'&&g.fever>=100){g.fever=0;g.grid.filter(x=>x.alive&&!x.friendly).slice(0,5).forEach(x=>{x.alive=false;explode(x.x,x.y,'#ffe17c',15);g.score+=150});toast('KIBARASKA FEVER!');sfx(1000,.25)}});window.addEventListener('keyup',e=>key[e.key]=false);
 $('start').onclick=()=>start(1);$('soundBtn').onclick=()=>{sfxEnabled=!sfxEnabled;$('soundBtn').textContent=sfxEnabled?'🔊 SFX ON':'🔇 SFX OFF';if(sfxEnabled)sfx(600)};
-$('musicBtn').onclick=()=>{musicEnabled=!musicEnabled;$('musicBtn').textContent=musicEnabled?'♫ MUSIC ON':'♫ MUSIC OFF';if(musicEnabled){try{ac ||= new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}}};
+$('musicBtn').onclick=()=>{
+  musicEnabled=!musicEnabled;
+  $('musicBtn').textContent=musicEnabled?'♫ MUSIC ON':'♫ MUSIC OFF';
+
+  if(musicEnabled){
+    playGameplayMusic();
+  }else{
+    gameplayMusic.pause();
+    gameplayMusic.currentTime=0;
+  }
+};
 g={mode:'menu',score:0,level:1,lives:3,coins:0,combo:0,fever:0,playerX:180,aimX:600,aimY:120,shots:[],grid:[],particles:[],elapsed:0};requestAnimationFrame(loop);
 })();
