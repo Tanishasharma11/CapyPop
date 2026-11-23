@@ -8,7 +8,7 @@ const levels=[
  {name:'Demon Encore',rows:5,cols:9,boss:false,limit:0},
  {name:'The Headliner',rows:4,cols:8,boss:true,limit:0}
 ];
-let g={},sfxEnabled=true,musicEnabled=true,ac=null,last=0,musicClock=0,musicStep=0;
+let g={},sfxEnabled=true,musicEnabled=true,ac=null,last=0;
 const art={};['kibaraska','train-station','derpy'].forEach(n=>{const im=new Image();im.src='asset/'+n+(n==='train-station'||n==='derpy'?'.jpg':'.png');art[n]=im});
 function sfx(f=500,d=.07,type='sine'){if(!sfxEnabled)return;try{ac ||= new(window.AudioContext||window.webkitAudioContext)();let o=ac.createOscillator(),a=ac.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(.065,ac.currentTime);a.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(a);a.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
 const gameplayMusic = new Audio('asset/gameplay-audio.mp3');
@@ -24,7 +24,7 @@ function stopGameplayMusic() {
   gameplayMusic.pause();
   gameplayMusic.currentTime = 0;
 }
-function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,descentCount:0,nextDescent:25,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
+function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,descentCount:0,nextDescent:25,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
 function descendFormation(){
   const cfg=levels[g.level-1];
 
