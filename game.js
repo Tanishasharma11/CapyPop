@@ -26,7 +26,9 @@ function stopGameplayMusic() {
 }
 function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
 function toast(t){g.toastText=t;g.toast=1.4;$('toast').textContent=t;$('toast').classList.add('show')}
-function updateHUD(){$('score').textContent=String(g.score).padStart(5,'0');$('lives').textContent='♥ '.repeat(g.lives).trim()||'—';$('coins').textContent=g.coins+' 🍊';$('combo').textContent='×'+Math.max(1,g.combo);$('meter').style.width=g.fever+'%';if(g.boss){$('bossFill').style.width=(100*g.boss.hp/g.boss.max)+'%';$('bossHp').textContent=g.boss.hp+' / '+g.boss.max}}
+function updateHUD(){$('score').textContent=String(g.score).padStart(5,'0');$('lives').textContent='♥ '.repeat(g.lives).trim()||'—';$('coins').textContent=g.coins+' 🍊';$('combo').textContent='×'+Math.max(1,g.combo);$('meter').style.width=g.fever+'%';const feverBtn=$('feverBtn');
+  feverBtn.hidden=g.fever<100;
+  feverBtn.disabled=g.mode!=='play'||g.fever<100; if(g.boss){$('bossFill').style.width=(100*g.boss.hp/g.boss.max)+'%';$('bossHp').textContent=g.boss.hp+' / '+g.boss.max}}
 function start(level=1){
   try{ac ||= new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
   fresh(level);
