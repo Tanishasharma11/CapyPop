@@ -14,14 +14,16 @@ Open `index.html` in a modern browser.  No dependencies or build process are req
 
 ![CAPYPOP Train Background](asset/CapyPop.jpg)
 
-## 🚥 Controls
+## 🚥 Keyboard Controls
 🍊Mouse / touch: aim and shoot
-
-🍊A / D or left / right arrows: move Kibaraska along the train
 
 🍊Spacebar: shoot
 
 🍊F: activate Kibaraska Fever when the meter is full
+
+🍊E: boosts fever meter faster to destroy 5 demons together
+
+🍊Q: shield activated when friendly idol are among enemies
 
 ## 🔧 Core mechanics
 Shoot coloured energy orbs into demon clusters.
