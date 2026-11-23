@@ -21,6 +21,9 @@ No dependencies or build process are required.
 
 🍊F: activate Kibaraska Fever when the meter is full
 
+## 🚆 Game Preview
+
+![CAPYPOP Train Background](asset/train-station.jpg)
 
 ### Core mechanics
 Shoot coloured energy orbs into demon clusters.
