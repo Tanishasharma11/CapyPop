@@ -119,6 +119,16 @@ Clear all demon formations, protect the friendly idols, use your special abiliti
 
 ---
 
+## Game Screenshots 
+
+#### Fever Blast
+
+![CAPYPOP Train Background](asset/fever%20blast.png)
+
+#### Derpy Shield
+
+![CAPYPOP Train Background](asset/derpy.jpg)
+
 <p align="center">
   Made with 💜, 🍊 and a little bit of demon-hunting energy.
   <br/>
