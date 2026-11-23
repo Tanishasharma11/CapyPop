@@ -24,7 +24,34 @@ function stopGameplayMusic() {
   gameplayMusic.pause();
   gameplayMusic.currentTime = 0;
 }
-function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
+function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,levelStart:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:180,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,cleared:0,toast:0,toastText:'',elapsed:0,descentCount:0,nextDescent:25,move:0,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];let colors=[0,1,2,3];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};g.levelStart=g.grid.filter(e=>!e.friendly).length+(g.boss?g.boss.hp:0);$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
+function descendFormation(){
+  const cfg=levels[g.level-1];
+
+  for(const demon of g.grid){
+    demon.y+=49;
+  }
+
+  const offset=g.descentCount%2===0?24:0;
+
+  // Create a fresh row of demons at the top
+  for(let col=0;col<cfg.cols;col++){
+    g.grid.push({
+      x:430+col*54+offset,
+      y:112,
+      r:20,
+      color:(Math.floor(col/3)+g.descentCount+1)%4,
+      friendly:false,
+      hp:1,
+      alive:true,
+      phase:Math.random()*6
+    });
+  }
+
+  g.descentCount++;
+  toast('NEW DEMON WAVE!');
+  sfx(350,.15,'triangle');
+}
 function toast(t){g.toastText=t;g.toast=1.4;$('toast').textContent=t;$('toast').classList.add('show')}
 function updateHUD(){$('score').textContent=String(g.score).padStart(5,'0');$('lives').textContent='♥ '.repeat(g.lives).trim()||'—';$('coins').textContent=g.coins+' 🍊';$('combo').textContent='×'+Math.max(1,g.combo);$('meter').style.width=g.fever+'%';const feverBtn=$('feverBtn');
   feverBtn.hidden=g.fever<100;
@@ -49,7 +76,10 @@ return true}
 function dropCheck(){// detached clusters fall away after a group is removed
 let live=g.grid.filter(e=>e.alive&&!e.friendly),seen=new Set();let connected=new Set();let tops=live.filter(e=>e.y<140);let q=[...tops];while(q.length){let e=q.pop();if(connected.has(e))continue;connected.add(e);neighbors(e).forEach(n=>{if(!connected.has(n))q.push(n)})}
 live.forEach(e=>{if(!connected.has(e)){e.alive=false;g.score+=50;g.coins+=1;explode(e.x,e.y,C[e.color],8)}})}
-function update(dt){if(g.mode!=='play')return;g.elapsed+=dt;g.shield=Math.max(0,(g.shield||0)-dt);g.boost=Math.max(0,(g.boost||0)-dt);g.playerX+=(g.move-g.playerX)*Math.min(1,dt*8);if(key.ArrowLeft||key.a||key.A)g.playerX-=250*dt;if(key.ArrowRight||key.d||key.D)g.playerX+=250*dt;g.playerX=Math.max(70,Math.min(380,g.playerX));g.comboTimer-=dt;if(g.comboTimer<=0){g.combo=0}
+function update(dt){if(g.mode!=='play')return;g.elapsed+=dt;if(g.elapsed>=g.nextDescent){
+  descendFormation();
+  g.nextDescent+=25;
+}g.shield=Math.max(0,(g.shield||0)-dt);g.boost=Math.max(0,(g.boost||0)-dt);g.playerX+=(g.move-g.playerX)*Math.min(1,dt*8);if(key.ArrowLeft||key.a||key.A)g.playerX-=250*dt;if(key.ArrowRight||key.d||key.D)g.playerX+=250*dt;g.playerX=Math.max(70,Math.min(380,g.playerX));g.comboTimer-=dt;if(g.comboTimer<=0){g.combo=0}
 g.toast=Math.max(0,g.toast-dt);if(!g.toast)$('toast').classList.remove('show');
 for(let e of g.grid)e.phase+=dt*2;
 for(let sh of g.shots){sh.x+=sh.vx*dt;sh.y+=sh.vy*dt;if(sh.x<12||sh.x>W-12){sh.vx*=-1;sh.x=Math.max(12,Math.min(W-12,sh.x))}if(hitShot(sh))sh.dead=true;if(sh.y<60)sh.dead=true}g.shots=g.shots.filter(s=>!s.dead);
