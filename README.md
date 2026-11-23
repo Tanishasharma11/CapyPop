@@ -8,9 +8,11 @@ https://tanishasharma11.github.io/CapyPop/
 
 Or:
 
-Open `index.html` in a modern browser. 
+Open `index.html` in a modern browser.  No dependencies or build process are required.
 
-No dependencies or build process are required.
+## 🚆 Game Preview
+
+![CAPYPOP Train Background](asset/CapyPop.jpg)
 
 ## 🚥 Controls
 🍊Mouse / touch: aim and shoot
@@ -20,10 +22,6 @@ No dependencies or build process are required.
 🍊Spacebar: shoot
 
 🍊F: activate Kibaraska Fever when the meter is full
-
-## 🚆 Game Preview
-
-![CAPYPOP Train Background](asset/CapyPop.jpg)
 
 ## 🔧 Core mechanics
 Shoot coloured energy orbs into demon clusters.
