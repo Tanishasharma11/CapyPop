@@ -24,7 +24,7 @@ function stopGameplayMusic() {
   gameplayMusic.pause();
   gameplayMusic.currentTime = 0;
 }
-function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:120,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),shotsTaken:0,toast:0,toastText:'',elapsed:0,descentCount:0,nextDescent:25,shield:0,boost:0,companionFx:0};let cfg=levels[level-1];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
+function fresh(level){stopGameplayMusic();g={mode:'play',level,score:0,lives:3,coins:0,combo:0,comboTimer:0,fever:0,playerX:120,aimX:500,aimY:150,shots:[],grid:[],particles:[],boss:null,orb:Math.floor(Math.random()*4),next:Math.floor(Math.random()*4),toast:0,elapsed:0,descentCount:0,nextDescent:25,shield:0,boost:0};let cfg=levels[level-1];for(let r=0;r<cfg.rows;r++)for(let col=0;col<cfg.cols;col++){let friendly=cfg.limit&&r===1&&col%4===1;g.grid.push({x:430+col*54+(r%2)*24,y:112+r*49,r:20,color:(Math.floor(col/3)+r)%4,friendly:!!friendly,hp:1,alive:true,phase:Math.random()*6})}if(cfg.boss)g.boss={x:780,y:190,r:49,hp:12,max:12,phase:0};$('level').textContent=String(level).padStart(2,'0')+' / 05';$('bossbar').classList.toggle('hidden',!g.boss);updateHUD();$('menu').classList.add('hidden');$('result').classList.add('hidden');toast('MATCH 3 OR MORE!');}
 function descendFormation(){
   const cfg=levels[g.level-1];
 
@@ -52,7 +52,7 @@ function descendFormation(){
   toast('NEW DEMON WAVE!');
   sfx(350,.15,'triangle');
 }
-function toast(t){g.toastText=t;g.toast=1.4;$('toast').textContent=t;$('toast').classList.add('show')}
+function toast(t){g.toast=1.4;$('toast').textContent=t;$('toast').classList.add('show')}
 function updateHUD(){$('score').textContent=String(g.score).padStart(5,'0');$('lives').textContent='♥ '.repeat(g.lives).trim()||'—';$('coins').textContent=g.coins+' 🍊';$('combo').textContent='×'+Math.max(1,g.combo);$('meter').style.width=g.fever+'%';const feverBtn=$('feverBtn');
   feverBtn.hidden=g.fever<100;
   feverBtn.disabled=g.mode!=='play'||g.fever<100; if(g.boss){$('bossFill').style.width=(100*g.boss.hp/g.boss.max)+'%';$('bossHp').textContent=g.boss.hp+' / '+g.boss.max}}
@@ -65,7 +65,7 @@ function finish(win){g.mode='result';stopGameplayMusic();let reward=Math.max(1,M
 function popCluster(seed){let found=[],stack=[seed],seen=new Set();while(stack.length){let e=stack.pop();if(!e||seen.has(e)||!e.alive)continue;seen.add(e);if(e.friendly||e.color!==seed.color)continue;found.push(e);for(let n of neighbors(e))if(!seen.has(n)&&!n.friendly&&n.color===seed.color)stack.push(n)}return found}
 function neighbors(e){return g.grid.filter(n=>n!==e&&n.alive&&Math.hypot(n.x-e.x,n.y-e.y)<67)}
 function explode(x,y,color,n=14){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,v=70+Math.random()*190;g.particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.45+Math.random()*.35,max:.8,r:2+Math.random()*4,color})}}
-function shoot(){if(g.mode!=='play'||g.shots.length>2)return;let dx=g.aimX-g.playerX,dy=g.aimY-493,ang=Math.atan2(dy,dx);if(ang>-.08)ang=-.08;let speed=680;g.shots.push({x:g.playerX+32,y:488,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,r:11,color:g.orb});g.orb=g.next;g.next=Math.floor(Math.random()*4);g.shotsTaken++;sfx(420+g.orb*100,.05,'triangle')}
+function shoot(){if(g.mode!=='play'||g.shots.length>2)return;let dx=g.aimX-g.playerX,dy=g.aimY-493,ang=Math.atan2(dy,dx);if(ang>-.08)ang=-.08;let speed=680;g.shots.push({x:g.playerX+32,y:488,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,r:11,color:g.orb});g.orb=g.next;g.next=Math.floor(Math.random()*4);sfx(420+g.orb*100,.05,'triangle')}
 function hitShot(sh){let target=null,dist=999;for(let e of g.grid){if(!e.alive)continue;let d=Math.hypot(sh.x-e.x,sh.y-e.y);if(d<e.r+sh.r+3&&d<dist){target=e;dist=d}}if(g.boss&&Math.hypot(sh.x-g.boss.x,sh.y-g.boss.y)<g.boss.r+sh.r)target=g.boss;if(!target)return false;
 if(target.friendly){if(g.shield>0){g.shield=0;explode(target.x,target.y,'#72d9ef',20);toast('DERPY BLOCKED IT!');sfx(880,.15);return true}target.alive=false;explode(target.x,target.y,'#fff0b0',12);g.lives--;g.combo=0;toast('OH NO! FRIENDLY IDOL!');sfx(150,.2,'sawtooth');if(g.lives<=0)finish(false);updateHUD();return true}
 if(target===g.boss){if(sh.color===g.bossColor||g.bossColor===undefined){g.boss.hp--;g.score+=80;g.combo++;g.fever=Math.min(100,g.fever+8);explode(sh.x,sh.y,C[sh.color],10);toast('BOSS HIT!');sfx(700,.08)}else{g.combo=0;toast('MATCH THE BOSS ORB!')}if(g.boss.hp<=0){g.score+=1000;g.coins+=5;explode(g.boss.x,g.boss.y,'#ffd36e',45);g.boss.dead=true;toast('BOSS DEFEATED! +1000');}return true}
