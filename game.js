@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const cv=document.getElementById('game'),c=cv.getContext('2d'),$=id=>document.getElementById(id),W=960,H=600;
-const C=['#ff78c8','#a78bfa','#72d9ef','#ffd36e'];const key={};
+const C=['#ff78c8','#a78bfa','#72d9ef','#ffd36e'];
 const levels=[
  {name:'First Fan Encounter',rows:3,cols:8,boss:false,limit:0},
  {name:'Tunnel Trouble',rows:4,cols:8,boss:false,limit:0},
@@ -144,8 +144,7 @@ function activateFever(){
 }
 
 window.addEventListener('keydown',e=>{
-  key[e.key]=true;
-
+  
   if(e.key===' '){
     e.preventDefault();
     shoot();
@@ -168,8 +167,6 @@ window.addEventListener('keydown',e=>{
     activateFever();
   }
 });
-
-window.addEventListener('keyup',e=>key[e.key]=false);
 
 $('feverBtn').onclick=activateFever;
 $('start').onclick=()=>start(1); $('soundBtn').onclick=()=>{sfxEnabled=!sfxEnabled;$('soundBtn').textContent=sfxEnabled?'🔊 SFX ON':'🔇 SFX OFF';if(sfxEnabled)sfx(600)};
