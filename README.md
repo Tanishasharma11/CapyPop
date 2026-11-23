@@ -129,6 +129,10 @@ Clear all demon formations, protect the friendly idols, use your special abiliti
 
 ![CAPYPOP Train Background](asset/derpy%20shield.png)
 
+#### Final Demon Boss Level with Healthbar
+
+![CAPYPOP Train Background](asset/demon%20boss%20level.png)
+
 <p align="center">
   Made with 💜, 🍊 and a little bit of demon-hunting energy.
   <br/>
