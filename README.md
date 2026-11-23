@@ -12,7 +12,7 @@ Open `index.html` in a modern browser.
 
 No dependencies or build process are required.
 
-## Controls
+## 🚥 Controls
 🍊Mouse / touch: aim and shoot
 
 🍊A / D or left / right arrows: move Kibaraska along the train
@@ -23,9 +23,9 @@ No dependencies or build process are required.
 
 ## 🚆 Game Preview
 
-![CAPYPOP Train Background](asset/train-station.jpg)
+![CAPYPOP Train Background](asset/CapyPop.jpg)
 
-### Core mechanics
+## 🔧 Core mechanics
 Shoot coloured energy orbs into demon clusters.
 
 Matching groups of 3 or more demons pop.
