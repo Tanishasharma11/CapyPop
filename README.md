@@ -125,9 +125,9 @@ Clear all demon formations, protect the friendly idols, use your special abiliti
 
 ![CAPYPOP Train Background](asset/fever%20blast.png)
 
-#### Derpy Shield
+#### Derpy Shield to Protect Idols and Attack Demons
 
-![CAPYPOP Train Background](asset/derpy.jpg)
+![CAPYPOP Train Background](asset/derpy%20shield.png)
 
 <p align="center">
   Made with 💜, 🍊 and a little bit of demon-hunting energy.
