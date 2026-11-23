@@ -74,7 +74,7 @@ else{g.combo=0;g.comboTimer=0;toast('NEED 3 OR MORE!');sfx(220,.08,'square')}}
 else{g.combo=0;g.comboTimer=0;toast('WRONG COLOUR!');sfx(220,.08,'square')}
 return true}
 function dropCheck(){// detached clusters fall away after a group is removed
-let live=g.grid.filter(e=>e.alive&&!e.friendly),seen=new Set();let connected=new Set();let tops=live.filter(e=>e.y<140);let q=[...tops];while(q.length){let e=q.pop();if(connected.has(e))continue;connected.add(e);neighbors(e).forEach(n=>{if(!connected.has(n))q.push(n)})}
+let live=g.grid.filter(e=>e.alive&&!e.friendly);let connected=new Set();let tops=live.filter(e=>e.y<140);let q=[...tops];while(q.length){let e=q.pop();if(connected.has(e))continue;connected.add(e);neighbors(e).forEach(n=>{if(!connected.has(n))q.push(n)})}
 live.forEach(e=>{if(!connected.has(e)){e.alive=false;g.score+=50;g.coins+=1;explode(e.x,e.y,C[e.color],8)}})}
 function update(dt){if(g.mode!=='play')return;g.elapsed+=dt;if(g.elapsed>=g.nextDescent){
   descendFormation();
